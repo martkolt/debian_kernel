@@ -151,7 +151,7 @@ source "drivers/usb/phy/Kconfig"
 
 source "drivers/usb/gadget/Kconfig"
 
-source "drivers/usb/dwc_otg_310/Kconfig"
+# source "drivers/usb/dwc_otg_310/Kconfig"
 
 config USB_LED_TRIG
 	bool "USB LED Triggers"

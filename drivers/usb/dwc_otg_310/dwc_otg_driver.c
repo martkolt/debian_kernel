@@ -311,13 +311,13 @@ static struct dwc_otg_driver_module_params dwc_host_module_params = {
 /**
  * This function shows the Driver Version.
  */
-static ssize_t version_show(struct device_driver *dev, char *buf)
+/*static ssize_t version_show(struct device_driver *dev, char *buf)
 {
 	return snprintf(buf, sizeof(DWC_DRIVER_VERSION) + 2, "%s\n",
 			DWC_DRIVER_VERSION);
-}
+}*/
 
-static DRIVER_ATTR(version, S_IRUGO, version_show, NULL);
+//static DRIVER_ATTR(version, S_IRUGO, version_show, NULL);
 
 /**
  * Global Debug Level Mask.
@@ -327,23 +327,24 @@ uint32_t g_dbg_lvl = DBG_OFF;	/* OFF */
 /**
  * This function shows the driver Debug Level.
  */
-static ssize_t dbg_level_show(struct device_driver *drv, char *buf)
+/*static ssize_t dbg_level_show(struct device_driver *drv, char *buf)
 {
 	return sprintf(buf, "0x%0x\n", g_dbg_lvl);
-}
+}*/
 
 /**
  * This function stores the driver Debug Level.
  */
-static ssize_t dbg_level_store(struct device_driver *drv, const char *buf,
+/*static ssize_t dbg_level_store(struct device_driver *drv, const char *buf,
 			       size_t count)
 {
 	g_dbg_lvl = simple_strtoul(buf, NULL, 16);
 	return count;
-}
+}*/
 
-static DRIVER_ATTR(debuglevel, S_IRUGO | S_IWUSR, dbg_level_show,
+/*static DRIVER_ATTR(debuglevel, S_IRUGO | S_IWUSR, dbg_level_show,
 		   dbg_level_store);
+*/
 
 extern void hcd_start(dwc_otg_core_if_t *core_if);
 extern struct usb_hub *g_dwc_otg_root_hub20;
@@ -416,15 +417,15 @@ void dwc_otg_force_device(dwc_otg_core_if_t *core_if)
 	local_irq_restore(flags);
 }
 
-static ssize_t force_usb_mode_show(struct device_driver *drv, char *buf)
+/*static ssize_t force_usb_mode_show(struct device_driver *drv, char *buf)
 {
 	dwc_otg_device_t *otg_dev = g_otgdev;
 	dwc_otg_core_if_t *core_if = otg_dev->core_if;
 
 	return sprintf(buf, "%d\n", core_if->usb_mode);
-}
+}*/
 
-static ssize_t force_usb_mode_store(struct device_driver *drv, const char *buf,
+/*static ssize_t force_usb_mode_store(struct device_driver *drv, const char *buf,
 				    size_t count)
 {
 	int new_mode = simple_strtoul(buf, NULL, 16);
@@ -452,8 +453,8 @@ static ssize_t force_usb_mode_store(struct device_driver *drv, const char *buf,
 	switch (new_mode) {
 	case USB_MODE_FORCE_HOST:
 		if (USB_MODE_FORCE_DEVICE == core_if->usb_mode) {
-			/* device-->host */
-			core_if->usb_mode = new_mode;
+*/			/* device-->host */
+/*			core_if->usb_mode = new_mode;
 			dwc_otg_force_host(core_if);
 		} else if (USB_MODE_NORMAL == core_if->usb_mode) {
 			core_if->usb_mode = new_mode;
@@ -482,8 +483,8 @@ static ssize_t force_usb_mode_store(struct device_driver *drv, const char *buf,
 			core_if->usb_mode = new_mode;
 			cancel_delayed_work(&otg_dev->pcd->check_vbus_work);
 			dwc_otg_set_force_mode(core_if, new_mode);
-			/* msleep(100); */
-			if (dwc_otg_is_host_mode(core_if)) {
+*/			/* msleep(100); */
+/*			if (dwc_otg_is_host_mode(core_if)) {
 				dwc_otg_force_host(core_if);
 			} else {
 				dwc_otg_pcd_start_check_vbus_work(otg_dev->pcd);
@@ -491,8 +492,8 @@ static ssize_t force_usb_mode_store(struct device_driver *drv, const char *buf,
 		} else if (USB_MODE_FORCE_HOST == core_if->usb_mode) {
 			core_if->usb_mode = new_mode;
 			dwc_otg_set_force_mode(core_if, new_mode);
-			/* msleep(100); */
-			if (dwc_otg_is_device_mode(core_if)) {
+*/			/* msleep(100); */
+/*			if (dwc_otg_is_device_mode(core_if)) {
 				dwc_otg_force_device(core_if);
 			}
 		}
@@ -502,21 +503,22 @@ static ssize_t force_usb_mode_store(struct device_driver *drv, const char *buf,
 		break;
 	}
 	return count;
-}
+}*/
 
-static DRIVER_ATTR(force_usb_mode, S_IRUGO | S_IWUSR, force_usb_mode_show,
+/*static DRIVER_ATTR(force_usb_mode, S_IRUGO | S_IWUSR, force_usb_mode_show,
 		   force_usb_mode_store);
+*/
 
-static ssize_t dwc_otg_conn_en_show(struct device_driver *_drv, char *_buf)
+/*static ssize_t dwc_otg_conn_en_show(struct device_driver *_drv, char *_buf)
 {
 
 	dwc_otg_device_t *otg_dev = g_otgdev;
 	dwc_otg_pcd_t *_pcd = otg_dev->pcd;
 	return sprintf(_buf, "%d\n", _pcd->conn_en);
 
-}
+}*/
 
-static ssize_t dwc_otg_conn_en_store(struct device_driver *_drv,
+/*static ssize_t dwc_otg_conn_en_store(struct device_driver *_drv,
 				     const char *_buf, size_t _count)
 {
 	int enable = simple_strtoul(_buf, NULL, 10);
@@ -526,10 +528,11 @@ static ssize_t dwc_otg_conn_en_store(struct device_driver *_drv,
 
 	_pcd->conn_en = enable;
 	return _count;
-}
+}*/
 
-static DRIVER_ATTR(dwc_otg_conn_en, S_IRUGO | S_IWUSR, dwc_otg_conn_en_show,
+/*static DRIVER_ATTR(dwc_otg_conn_en, S_IRUGO | S_IWUSR, dwc_otg_conn_en_show,
 		   dwc_otg_conn_en_store);
+*/
 
 /* used for product vbus power control, SDK not need.
  * If dwc_otg is host mode, enable vbus power.
@@ -556,7 +559,7 @@ int dwc_otg_usb_state(void)
 }
 EXPORT_SYMBOL(dwc_otg_usb_state);
 
-static ssize_t dwc_otg_op_state_show(struct device_driver *_drv, char *_buf)
+/*static ssize_t dwc_otg_op_state_show(struct device_driver *_drv, char *_buf)
 {
 	dwc_otg_device_t *otg_dev = g_otgdev;
 
@@ -565,23 +568,23 @@ static ssize_t dwc_otg_op_state_show(struct device_driver *_drv, char *_buf)
 	} else {
 		return sprintf(_buf, "%d\n", 0);
 	}
-}
-static DRIVER_ATTR(op_state, S_IRUGO, dwc_otg_op_state_show, NULL);
+}*/
+//static DRIVER_ATTR(op_state, S_IRUGO, dwc_otg_op_state_show, NULL);
 
-static ssize_t vbus_status_show(struct device_driver *_drv, char *_buf)
+/*static ssize_t vbus_status_show(struct device_driver *_drv, char *_buf)
 {
 	dwc_otg_device_t *otg_dev = g_otgdev;
 	dwc_otg_pcd_t *_pcd = otg_dev->pcd;
 	return sprintf(_buf, "%d\n", _pcd->vbus_status);
-}
+}*/
 
-static DRIVER_ATTR(vbus_status, S_IRUGO, vbus_status_show, NULL);
+//static DRIVER_ATTR(vbus_status, S_IRUGO, vbus_status_show, NULL);
 
 /**
  * This function is called during module intialization
  * to pass module parameters to the DWC_OTG CORE.
  */
-static int set_parameters(dwc_otg_core_if_t *core_if,
+/*static int set_parameters(dwc_otg_core_if_t *core_if,
 			  struct dwc_otg_driver_module_params module_params)
 {
 	int retval = 0;
@@ -827,22 +830,24 @@ static int set_parameters(dwc_otg_core_if_t *core_if,
 						 module_params.adp_enable);
 	}
 	return retval;
-}
+}*/
 
 /**
  * This function is the top level interrupt handler for the Common
  * (Device and host modes) interrupts.
  */
-static irqreturn_t dwc_otg_common_irq(int irq, void *dev)
+/*static irqreturn_t dwc_otg_common_irq(int irq, void *dev)
 {
 	int32_t retval = IRQ_NONE;
 
 	retval = dwc_otg_handle_common_intr(dev);
 	if (retval != 0) {
-		/* S3C2410X_CLEAR_EINTPEND(); */
-	}
+*/		/* S3C2410X_CLEAR_EINTPEND(); */
+/*	}
 	return IRQ_RETVAL(retval);
 }
+*/
+
 
 #ifdef CONFIG_USB20_HOST
 /**
@@ -1152,18 +1157,18 @@ clk_disable:
 }
 #endif
 
-static int dwc_otg_driver_suspend(struct platform_device *_dev,
+/*static int dwc_otg_driver_suspend(struct platform_device *_dev,
 				  pm_message_t state)
 {
 	return 0;
-}
+}*/
 
-static int dwc_otg_driver_resume(struct platform_device *_dev)
+/*static int dwc_otg_driver_resume(struct platform_device *_dev)
 {
 	return 0;
-}
+}*/
 
-static void dwc_otg_driver_shutdown(struct platform_device *_dev)
+/*static void dwc_otg_driver_shutdown(struct platform_device *_dev)
 {
 	struct device *dev = &_dev->dev;
 	dwc_otg_device_t *otg_dev = dev->platform_data;
@@ -1180,22 +1185,22 @@ static void dwc_otg_driver_shutdown(struct platform_device *_dev)
 			core_if->hcd_cb->stop(core_if->hcd_cb_p);
 	} else {
 		cancel_delayed_work_sync(&pcd->check_vbus_work);
-		/* soft disconnect */
-		dctl.d32 =
+*/		/* soft disconnect */
+/*		dctl.d32 =
 		    DWC_READ_REG32(&core_if->dev_if->dev_global_regs->dctl);
 		dctl.b.sftdiscon = 1;
 		DWC_WRITE_REG32(&core_if->dev_if->dev_global_regs->dctl,
 				dctl.d32);
 	}
-	/* Clear any pending interrupts */
-	DWC_WRITE_REG32(&core_if->core_global_regs->gintsts, 0xFFFFFFFF);
+*/	/* Clear any pending interrupts */
+/*	DWC_WRITE_REG32(&core_if->core_global_regs->gintsts, 0xFFFFFFFF);
 
 	if (pldata->dwc_otg_uart_mode != NULL)
 		pldata->dwc_otg_uart_mode(pldata, PHY_USB_MODE);
 	if (pldata->phy_suspend != NULL)
 		pldata->phy_suspend(pldata, USB_PHY_ENABLED);
 
-}
+}*/
 
 /**
  * This structure defines the methods to be called by a bus driver
@@ -1768,7 +1773,7 @@ EXPORT_SYMBOL(rk_usb_power_down);
 static int __init dwc_otg_driver_init(void)
 {
 	int retval = 0;
-	int error;
+	int error = 0;
 
 #ifdef CONFIG_USB20_OTG
 	/* register otg20 */
@@ -1817,6 +1822,10 @@ static int __init dwc_otg_driver_init(void)
 	    driver_create_file(&dwc_host_driver.driver,
 			       &driver_attr_debuglevel);
 #endif
+        if(error) {
+            return retval;
+        }
+        
 	return retval;
 }
 

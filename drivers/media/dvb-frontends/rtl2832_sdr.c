@@ -257,7 +257,7 @@ static void rtl2832_sdr_urb_complete(struct urb *urb)
 		len = rtl2832_sdr_convert_stream(dev, ptr, urb->transfer_buffer,
 				urb->actual_length);
 		vb2_set_plane_payload(&fbuf->vb.vb2_buf, 0, len);
-		fbuf->vb.vb2_buf.timestamp = ktime_get_ns();
+		v4l2_get_timestamp(&fbuf->vb.timestamp);
 		fbuf->vb.sequence = dev->sequence++;
 		vb2_buffer_done(&fbuf->vb.vb2_buf, VB2_BUF_STATE_DONE);
 	}
@@ -428,13 +428,16 @@ static int rtl2832_sdr_querycap(struct file *file, void *fh,
 	strscpy(cap->driver, KBUILD_MODNAME, sizeof(cap->driver));
 	strscpy(cap->card, dev->vdev.name, sizeof(cap->card));
 	usb_make_path(dev->udev, cap->bus_info, sizeof(cap->bus_info));
+	cap->device_caps = V4L2_CAP_SDR_CAPTURE | V4L2_CAP_STREAMING |
+			V4L2_CAP_READWRITE | V4L2_CAP_TUNER;
+	cap->capabilities = cap->device_caps | V4L2_CAP_DEVICE_CAPS;
 	return 0;
 }
 
 /* Videobuf2 operations */
 static int rtl2832_sdr_queue_setup(struct vb2_queue *vq,
-		unsigned int *nbuffers,
-		unsigned int *nplanes, unsigned int sizes[], struct device *alloc_devs[])
+		const void *parg, unsigned int *nbuffers,
+		unsigned int *nplanes, unsigned int sizes[], void *alloc_devs[])
 {
 	struct rtl2832_sdr_dev *dev = vb2_get_drv_priv(vq);
 	struct platform_device *pdev = dev->pdev;
@@ -939,7 +942,7 @@ static void rtl2832_sdr_stop_streaming(struct vb2_queue *vq)
 	mutex_unlock(&dev->v4l2_lock);
 }
 
-static const struct vb2_ops rtl2832_sdr_vb2_ops = {
+static struct vb2_ops rtl2832_sdr_vb2_ops = {
 	.queue_setup            = rtl2832_sdr_queue_setup,
 	.buf_prepare            = rtl2832_sdr_buf_prepare,
 	.buf_queue              = rtl2832_sdr_buf_queue,
@@ -1238,9 +1241,7 @@ static struct video_device rtl2832_sdr_template = {
 	.name                     = "Realtek RTL2832 SDR",
 	.release                  = video_device_release_empty,
 	.fops                     = &rtl2832_sdr_fops,
-	.ioctl_ops                = &rtl2832_sdr_ioctl_ops,
-	.device_caps		  = V4L2_CAP_SDR_CAPTURE | V4L2_CAP_STREAMING |
-				    V4L2_CAP_READWRITE | V4L2_CAP_TUNER,
+	.ioctl_ops                = &rtl2832_sdr_ioctl_ops
 };
 
 static int rtl2832_sdr_s_ctrl(struct v4l2_ctrl *ctrl)
@@ -1380,7 +1381,7 @@ static int rtl2832_sdr_probe(struct platform_device *pdev)
 		v4l2_ctrl_handler_init(&dev->hdl, 9);
 		if (subdev)
 			v4l2_ctrl_add_handler(&dev->hdl, subdev->ctrl_handler,
-					      NULL, true);
+					      NULL);
 		break;
 	case RTL2832_SDR_TUNER_R820T:
 	case RTL2832_SDR_TUNER_R828D:
@@ -1409,7 +1410,7 @@ static int rtl2832_sdr_probe(struct platform_device *pdev)
 		v4l2_ctrl_handler_init(&dev->hdl, 2);
 		if (subdev)
 			v4l2_ctrl_add_handler(&dev->hdl, subdev->ctrl_handler,
-					      NULL, true);
+					      NULL);
 		break;
 	default:
 		v4l2_ctrl_handler_init(&dev->hdl, 0);

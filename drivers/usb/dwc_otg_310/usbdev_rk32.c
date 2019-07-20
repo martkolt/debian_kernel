@@ -159,9 +159,11 @@ static bool dwc_otg_uart_enabled(void)
 
 	return false;
 }
+#endif
 
 static void dwc_otg_uart_mode(void *pdata, int enter_usb_uart_mode)
 {
+#ifdef CONFIG_RK_USB_UART
 	if ((1 == enter_usb_uart_mode) && dwc_otg_uart_enabled()) {
 		/* bypass dm, enter uart mode */
 		control_usb->grf_uoc0_base->CON3 = (0x00c0 | (0x00c0 << 16));
@@ -170,12 +172,8 @@ static void dwc_otg_uart_mode(void *pdata, int enter_usb_uart_mode)
 		/* enter usb mode */
 		control_usb->grf_uoc0_base->CON3 = (0x00c0 << 16);
 	}
-}
-#else
-static void dwc_otg_uart_mode(void *pdata, int enter_usb_uart_mode)
-{
-}
 #endif
+}
 
 static void usb20otg_power_enable(int enable)
 {
@@ -706,7 +704,7 @@ static irqreturn_t bvalid_irq_handler(int irq, void *dev_id)
 	control_usb->grf_uoc0_base->CON4 = (0x0008 | (0x0008 << 16));
 
 	/* usb otg dp/dm switch to usb phy */
-	dwc_otg_uart_mode(NULL, PHY_USB_MODE);
+//	dwc_otg_uart_mode(NULL, PHY_USB_MODE);
 
 	if (control_usb->usb_irq_wakeup) {
 		wake_lock_timeout(&control_usb->usb_wakelock,
@@ -736,7 +734,7 @@ static irqreturn_t id_irq_handler(int irq, void *dev_id)
 	/* id fall */
 	if (uoc_con & (1 << 7)) {
 		/* usb otg dp/dm switch to usb phy */
-		dwc_otg_uart_mode(NULL, PHY_USB_MODE);
+//		dwc_otg_uart_mode(NULL, PHY_USB_MODE);
 		/* clear id fall irq pandding */
 		control_usb->grf_uoc0_base->CON4 = ((1 << 7) | (1 << 23));
 	}

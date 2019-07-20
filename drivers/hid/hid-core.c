@@ -2083,7 +2083,7 @@ struct hid_dynid {
  * Adds a new dynamic hid device ID to this driver,
  * and causes the driver to probe for all devices again.
  */
-static ssize_t store_new_id(struct device_driver *drv, const char *buf,
+static ssize_t new_id_store(struct device_driver *drv, const char *buf,
 		size_t count)
 {
 	struct hid_driver *hdrv = container_of(drv, struct hid_driver, driver);
@@ -2115,7 +2115,7 @@ static ssize_t store_new_id(struct device_driver *drv, const char *buf,
 
 	return ret ? : count;
 }
-static DRIVER_ATTR(new_id, S_IWUSR, NULL, store_new_id);
+static DRIVER_ATTR_WO(new_id);//, S_IWUSR, NULL, store_new_id);
 
 static void hid_free_dynids(struct hid_driver *hdrv)
 {
